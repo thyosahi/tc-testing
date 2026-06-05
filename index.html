@@ -3,403 +3,531 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UTM & Lead Source Testing</title>
+    <title>Lead Attribution Test Site</title>
     <style>
+        :root {
+            --bg: #f0f4f8;
+            --card: #ffffff;
+            --border: #d8e0ea;
+            --text: #1a2332;
+            --muted: #5c6b7a;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --success: #059669;
+            --danger: #dc2626;
+            --warning-bg: #fffbeb;
+            --warning-border: #f59e0b;
+        }
+
+        * { box-sizing: border-box; }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 20px;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
         }
+
+        header {
+            background: linear-gradient(135deg, #1e3a5f, #2563eb);
+            color: #fff;
+            padding: 2rem 1.5rem;
+        }
+
+        header h1 {
+            margin: 0 0 0.5rem;
+            font-size: 1.75rem;
+        }
+
+        header p {
+            margin: 0;
+            opacity: 0.9;
+            max-width: 640px;
+        }
+
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            display: grid;
+            gap: 1.5rem;
+        }
+
         .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h2 {
+            margin: 0 0 1rem;
+            font-size: 1.1rem;
+        }
+
+        .notice {
+            background: var(--warning-bg);
+            border-left: 4px solid var(--warning-border);
+            padding: 0.875rem 1rem;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        button, .btn {
+            display: inline-block;
+            border: none;
+            border-radius: 6px;
+            padding: 0.55rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-danger:hover { background: #b91c1c; }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover { background: var(--accent-hover); }
+
+        .btn-outline {
             background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            color: var(--accent);
+            border: 1px solid var(--accent);
         }
-        h2 {
-            margin-top: 0;
-            color: #2c3e50;
+
+        .btn-outline:hover { background: #eff6ff; }
+
+        .form-grid {
+            display: grid;
+            gap: 1rem;
         }
-        .form-group {
-            margin-bottom: 15px;
+
+        @media (min-width: 640px) {
+            .form-grid.two-col {
+                grid-template-columns: 1fr 1fr;
+            }
         }
+
         label {
             display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
-        input[type="text"] {
+
+        input[type="text"],
+        input[type="email"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #e9ecef;
-            box-sizing: border-box;
-            color: #000;
+            padding: 0.65rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
         }
-        .btn-clear {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-bottom: 20px;
+
+        input[readonly] {
+            background: #f8fafc;
+            color: var(--text);
         }
-        .btn-clear:hover {
-            background-color: #c0392b;
+
+        .attr-field input[readonly] {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-weight: 600;
         }
-        .instructions {
-            font-size: 14px;
-            background: #e8f4f8;
-            padding: 15px;
-            border-left: 4px solid #3498db;
-            margin-bottom: 20px;
+
+        .current-url {
+            font-size: 0.85rem;
+            color: var(--muted);
+            word-break: break-all;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0.75rem;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+
+        .test-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .test-list li {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem 1rem;
+            padding: 0.65rem 0.75rem;
+            background: #f8fafc;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+
+        .test-list a {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .test-list a:hover { text-decoration: underline; }
+
+        .expected {
+            color: var(--success);
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.8rem;
+        }
+
+        .live-values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .live-values div {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 6px;
+            padding: 0.65rem 0.75rem;
+        }
+
+        .live-values span {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .live-values strong {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.95rem;
+        }
+
+        #submission-result {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #ecfdf5;
+            border: 1px solid #6ee7b7;
+            border-radius: 8px;
+        }
+
+        #submission-result.visible { display: block; }
+
+        #submission-result h3 {
+            margin: 0 0 0.75rem;
+            color: var(--success);
+            font-size: 1rem;
+        }
+
+        pre {
+            margin: 0;
+            padding: 0.75rem;
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.8rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 0.5rem 0.65rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .empty-state {
+            color: var(--muted);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 1.5rem;
         }
     </style>
-      <script
-src='//in.fw-cdn.com/31719983/876676.js'
-chat='true'>
-</script>
 </head>
 <body>
+    <header>
+        <h1>Lead Attribution Test Site</h1>
+        <p>Test UTM parameter mapping and form submission with Freshsales-style hidden fields. Deploy to Vercel or GitHub Pages to share with your team.</p>
+    </header>
 
-    <div class="card">
-        <h2>Attribution Test Form</h2>
-        
-        <div class="instructions">
-            <p><strong>How to test:</strong></p>
-            <ol>
-                <li>Append test parameters to the URL (e.g., <code>?utm_source=meta&utm_medium=social</code>) and press Enter.</li>
-                <li>Verify the fields below update correctly.</li>
-                <li>Click <strong>Clear Storage & Reload</strong> before testing the next URL.</li>
-            </ol>
-        </div>
-
-        <button class="btn-clear" onclick="clearStorage()">Clear Storage & Reload</button>
-
-        <form id="lead-form">
-            <div class="form-group">
-                <label for="lead_source">Lead Source:</label>
-                <!-- Using text inputs instead of hidden so you can see the results -->
-                <input type="text" name="lead_source" id="lead_source" readonly>
+    <main>
+        <section class="card">
+            <h2>Quick test URLs</h2>
+            <div class="notice">
+                Click a test link below, then submit the form. Use <strong>Clear Storage &amp; Reload</strong> before each new test so attribution runs fresh.
             </div>
-            
-            <div class="form-group">
-                <label for="lead_medium">Lead Medium:</label>
-                <input type="text" name="lead_medium" id="lead_medium" readonly>
+            <div class="btn-row">
+                <button type="button" class="btn-danger" id="clear-btn">Clear Storage &amp; Reload</button>
             </div>
-            
-            <div class="form-group">
-                <label for="lead_campaign">Lead Campaign:</label>
-                <input type="text" name="lead_campaign" id="lead_campaign" readonly>
+            <div class="current-url">
+                <strong>Current URL:</strong> <span id="current-url"></span>
             </div>
+            <ul class="test-list" id="test-links"></ul>
+            <div class="live-values" id="live-values"></div>
+        </section>
 
-            <div class="form-group">
-                <label for="google_click_id">Google Click ID (gclid):</label>
-                <input type="text" name="google_click_id" id="google_click_id" readonly>
-            </div>
+        <section class="card">
+            <h2>Contact form (simulated lead submission)</h2>
+            <form id="lead-form">
+                <div class="form-grid two-col">
+                    <div>
+                        <label for="first_name">First name</label>
+                        <input type="text" id="first_name" name="first_name" required placeholder="Jane">
+                    </div>
+                    <div>
+                        <label for="last_name">Last name</label>
+                        <input type="text" id="last_name" name="last_name" required placeholder="Doe">
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="jane@example.com">
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label for="facebook_click_id">Facebook Click ID (fbclid):</label>
-                <input type="text" name="facebook_click_id" id="facebook_click_id" readonly>
-            </div>
+                <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
 
-            <div class="form-group">
-                <label for="ga_client_id">GA Client ID:</label>
-                <input type="text" name="ga_client_id" id="ga_client_id" readonly>
-            </div>
-        </form>
-    </div>
+                <p style="margin: 0 0 1rem; font-size: 0.9rem; color: var(--muted);">
+                    Attribution fields (auto-populated by script — these would normally be hidden on production):
+                </p>
 
-    <!-- Helper script for testing -->
+                <div class="form-grid two-col attr-field">
+                    <div>
+                        <label for="lead_source">Lead Source</label>
+                        <input type="text" name="lead_source" id="lead_source" readonly>
+                    </div>
+                    <div>
+                        <label for="lead_medium">Lead Medium</label>
+                        <input type="text" name="lead_medium" id="lead_medium" readonly>
+                    </div>
+                    <div>
+                        <label for="lead_campaign">Lead Campaign</label>
+                        <input type="text" name="lead_campaign" id="lead_campaign" readonly>
+                    </div>
+                    <div>
+                        <label for="google_click_id">Google Click ID</label>
+                        <input type="text" name="google_click_id" id="google_click_id" readonly>
+                    </div>
+                    <div>
+                        <label for="facebook_click_id">Facebook Click ID</label>
+                        <input type="text" name="facebook_click_id" id="facebook_click_id" readonly>
+                    </div>
+                    <div>
+                        <label for="ga_client_id">GA Client ID</label>
+                        <input type="text" name="ga_client_id" id="ga_client_id" readonly>
+                    </div>
+                </div>
+
+                <div class="btn-row" style="margin-top: 1.25rem;">
+                    <button type="submit" class="btn-primary">Submit lead</button>
+                </div>
+            </form>
+
+            <div id="submission-result">
+                <h3>Submission captured</h3>
+                <p style="margin: 0 0 0.75rem; font-size: 0.9rem;">This is what would be sent to your CRM:</p>
+                <pre id="submission-json"></pre>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Submission history</h2>
+            <div id="history-empty" class="empty-state">No submissions yet. Submit the form above to see results here.</div>
+            <div id="history-table-wrap" style="display: none; overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Lead Source</th>
+                            <th>Lead Medium</th>
+                            <th>UTM Source</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body"></tbody>
+                </table>
+            </div>
+            <div class="btn-row" style="margin-top: 1rem;">
+                <button type="button" class="btn-outline" id="clear-history-btn" style="display: none;">Clear history</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="attribution.js"></script>
     <script>
-        function clearStorage() {
-            window.localStorage.clear();
-            // Strip UTMs from URL to reload fresh
-            window.location.href = window.location.origin + window.location.pathname;
+        var TEST_CASES = [
+            { label: "Meta → facebook", query: "?utm_source=meta&utm_medium=social", expected: "facebook" },
+            { label: "FB paid social → facebook", query: "?utm_source=fb&utm_medium=paidsocial", expected: "facebook" },
+            { label: "IG → instagram", query: "?utm_source=ig&utm_medium=social", expected: "instagram" },
+            { label: "Insta → instagram", query: "?utm_source=insta&utm_medium=social", expected: "instagram" },
+            { label: "LinkedIn lnkd.in → linkedin", query: "?utm_source=lnkd.in&utm_medium=social", expected: "linkedin" },
+            { label: "LI → linkedin", query: "?utm_source=li&utm_medium=social", expected: "linkedin" },
+            { label: "YouTube youtu.be → youtube", query: "?utm_source=youtu.be&utm_medium=social", expected: "youtube" },
+            { label: "LinkTree → linktree", query: "?utm_source=linktr.ee&utm_medium=social", expected: "linktree" },
+            { label: "Meta paid social → facebook", query: "?utm_source=meta&utm_medium=ppc", expected: "facebook" }
+        ];
+
+        var HISTORY_KEY = "_fm_test_submissions";
+
+        function getBaseUrl() {
+            return window.location.origin + window.location.pathname;
         }
-    </script>
 
-    <!-- Main Logic Script -->
-    <script>
-        var lead_source = window.localStorage.getItem("_fm_ls") || "";
-        var lead_medium = window.localStorage.getItem("_fm_lm") || "";
-        var lead_campaign = window.localStorage.getItem("_fm_lc") || "";
-        var google_click_id = window.localStorage.getItem("_fm_gcid") || "";
-        var fb_click_id = window.localStorage.getItem("_fm_fbclid") || "";
-        var ga_client_id = window.localStorage.getItem("_fm_gaid") || "";
+        function renderTestLinks() {
+            var list = document.getElementById("test-links");
+            var base = getBaseUrl();
+            list.innerHTML = TEST_CASES.map(function (tc) {
+                var href = base + tc.query;
+                return '<li><a href="' + href + '">' + tc.label + '</a> <span class="expected">→ lead_source: ' + tc.expected + '</span></li>';
+            }).join("");
+        }
 
-        if (lead_source === "") {
-            const social_media = [
-                "digg", "facebook", "fb", "flickr", "friendfeed", "google+", "hackernews", "hootsuite", "instagram", "ig", "insta", "linkedin", "lnkd.in", "li", "livejournal", "meebo", "metacafe", "mixx", "myspace", "ning", "pinterest", "quora", "reddit", "seesmic", "slashdot", "slideshare", "slide", "snapchat", "stumbleupon", "squidoo", "technorati", "tiktok", "tip'd", "tipd", "triiibes", "tumblr", "twitter", "x", "x.com", "vimeo", "wikipedia", "xing", "youtube", "youtube.com", "youtu.be", "zhihu", "linktree", "linktr.ee", "whatsapp", "discord", "telegram", "meta",
-            ];
-            const search_engines = ["google", "yahoo", "bing", "baidu", "aol", "duckduckgo", "ask", "yandex"];
-            const display_networks = ["stackadapt"];
+        function renderLiveValues() {
+            document.getElementById("current-url").textContent = window.location.href;
+            document.getElementById("live-values").innerHTML =
+                '<div><span>Lead Source</span><strong id="live-ls">' + (lead_source || "—") + '</strong></div>' +
+                '<div><span>Lead Medium</span><strong id="live-lm">' + (lead_medium || "—") + '</strong></div>' +
+                '<div><span>Lead Campaign</span><strong id="live-lc">' + (lead_campaign || "—") + '</strong></div>' +
+                '<div><span>localStorage _fm_ls</span><strong>' + (localStorage.getItem("_fm_ls") || "—") + '</strong></div>';
+        }
 
-            const normalizeSocialSource = (source) => {
-                if (!source) return source;
-                const src = source.toLowerCase();
-                if (["facebook", "fb", "meta"].includes(src)) return "facebook";
-                if (["instagram", "ig", "insta"].includes(src)) return "instagram";
-                if (["linkedin", "lnkd.in", "li"].includes(src)) return "linkedin";
-                if (["youtube", "youtube.com", "youtu.be"].includes(src)) return "youtube";
-                if (["linktree", "linktr.ee"].includes(src)) return "linktree";
-                if (["twitter", "x", "x.com"].includes(src)) return "twitter";
-                return src;
+        function clearStorageAndReload() {
+            localStorage.removeItem("_fm_ls");
+            localStorage.removeItem("_fm_lm");
+            localStorage.removeItem("_fm_lc");
+            localStorage.removeItem("_fm_gcid");
+            localStorage.removeItem("_fm_fbclid");
+            localStorage.removeItem("_fm_gaid");
+            window.location.href = getBaseUrl();
+        }
+
+        function loadHistory() {
+            try {
+                return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveHistory(entries) {
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(entries));
+        }
+
+        function renderHistory() {
+            var entries = loadHistory();
+            var empty = document.getElementById("history-empty");
+            var wrap = document.getElementById("history-table-wrap");
+            var clearBtn = document.getElementById("clear-history-btn");
+            var body = document.getElementById("history-body");
+
+            if (entries.length === 0) {
+                empty.style.display = "block";
+                wrap.style.display = "none";
+                clearBtn.style.display = "none";
+                return;
+            }
+
+            empty.style.display = "none";
+            wrap.style.display = "block";
+            clearBtn.style.display = "inline-block";
+            body.innerHTML = entries.slice().reverse().map(function (e) {
+                return "<tr>" +
+                    "<td>" + e.time + "</td>" +
+                    "<td>" + e.first_name + " " + e.last_name + "</td>" +
+                    "<td>" + e.email + "</td>" +
+                    "<td><strong>" + e.lead_source + "</strong></td>" +
+                    "<td>" + e.lead_medium + "</td>" +
+                    "<td>" + (e.utm_source || "—") + "</td>" +
+                    "</tr>";
+            }).join("");
+        }
+
+        document.getElementById("clear-btn").addEventListener("click", clearStorageAndReload);
+
+        document.getElementById("clear-history-btn").addEventListener("click", function () {
+            localStorage.removeItem(HISTORY_KEY);
+            renderHistory();
+        });
+
+        document.getElementById("lead-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+            populateForms();
+
+            var params = new URLSearchParams(window.location.search);
+            var payload = {
+                first_name: document.getElementById("first_name").value.trim(),
+                last_name: document.getElementById("last_name").value.trim(),
+                email: document.getElementById("email").value.trim(),
+                lead_source: document.getElementById("lead_source").value,
+                lead_medium: document.getElementById("lead_medium").value,
+                lead_campaign: document.getElementById("lead_campaign").value,
+                google_click_id: document.getElementById("google_click_id").value,
+                facebook_click_id: document.getElementById("facebook_click_id").value,
+                ga_client_id: document.getElementById("ga_client_id").value,
+                utm_source: params.get("utm_source") || "",
+                utm_medium: params.get("utm_medium") || "",
+                utm_campaign: params.get("utm_campaign") || "",
+                page_url: window.location.href,
+                submitted_at: new Date().toISOString()
             };
 
-            const referrer = function () {
-                var ref = document.referrer.toLowerCase();
-                if (ref.startsWith("http")) {
-                    const urlRef = new URL(ref);
-                    var referrerHost = urlRef.hostname;
-                    if (referrerHost.startsWith("www")) {
-                        ref = referrerHost.substring(4);
-                    } else {
-                        ref = referrerHost;
-                    }
-                }
-                if (ref !== "") {
-                    var matches = search_engines.filter((domain) => ref.includes(domain));
-                    if (matches.length > 0) {
-                        ref = matches[0];
-                    } else {
-                        matches = social_media.filter((domain) => ref.includes(domain));
-                        if (matches.length > 0) {
-                            ref = matches[0];
-                        }
-                    }
-                }
-                return ref;
-            }().toLowerCase();
-
-            const cookies = document.cookie;
-            const url_search_params = new URLSearchParams(window.location.search);
-            var params = new Map();
-            for (const entry of url_search_params.entries()) {
-                params.set(entry[0].toLowerCase(), entry[1]);
-            }
-
-            google_click_id = params.has("gclid") ? params.get("gclid") : "";
-            fb_click_id = params.has("fbclid") ? params.get("fbclid") : "";
-            ga_client_id = "";
-            cookies.split(";").forEach((cookie) => {
-                if (cookie.length > 0) {
-                    var cookieSplits = cookie.trim().split("=");
-                    if (cookieSplits.length > 1) {
-                        if ("_ga" === cookieSplits[0].trim()) {
-                            var full_ga_client_id = cookieSplits[1].trim();
-                            var splits = full_ga_client_id.split(".");
-                            if (ga_client_id === "") {
-                                for (var i = 2; i < splits.length; ++i) {
-                                    ga_client_id += "." + splits[i];
-                                }
-                                ga_client_id = ga_client_id.substring(1);
-                            }
-                        }
-                    }
-                }
+            var history = loadHistory();
+            history.push({
+                time: new Date().toLocaleString(),
+                first_name: payload.first_name,
+                last_name: payload.last_name,
+                email: payload.email,
+                lead_source: payload.lead_source,
+                lead_medium: payload.lead_medium,
+                utm_source: payload.utm_source
             });
+            saveHistory(history);
 
-            var utm_source = params.get("utm_source") ? params.get("utm_source").trim().toLowerCase() : "";
-            var utm_medium = params.get("utm_medium") ? params.get("utm_medium").trim().toLowerCase() : "";
-            var utm_campaign = params.get("utm_campaign") ? params.get("utm_campaign").trim().toLowerCase() : "";
-            var source = params.get("source") ? params.get("source").trim().toLowerCase() : "";
-            var utm_combined = (utm_source + " " + utm_medium + " " + utm_campaign).toLowerCase();
+            document.getElementById("submission-json").textContent = JSON.stringify(payload, null, 2);
+            document.getElementById("submission-result").classList.add("visible");
+            renderHistory();
+            document.getElementById("submission-result").scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
 
-            lead_source = "direct";
-            lead_medium = "direct traffic";
-            lead_campaign = params.has("utm_campaign") ? params.get("utm_campaign") : "";
-
-            var paid_social_medium =
-                utm_medium.indexOf("paidsocial") >= 0 || utm_medium.indexOf("paid social") >= 0 ||
-                utm_medium.indexOf("paid_social") >= 0 || utm_medium.indexOf("paid+social") >= 0 ||
-                utm_medium.indexOf("paid_search") >= 0 || utm_medium.indexOf("paid+search") >= 0 ||
-                utm_medium.indexOf("paid search") >= 0 || utm_medium.indexOf("ppc") >= 0 ||
-                utm_medium.indexOf("cpc") >= 0 || utm_medium.indexOf("cps") >= 0 ||
-                /\bpaid\b/.test(utm_medium) || utm_medium.indexOf("paid,") >= 0;
-
-            if (google_click_id !== "") {
-                lead_medium = "paid search";
-                lead_source = "google";
-            } else if (fb_click_id !== "") {
-                if (utm_medium.includes("paidsocial") || utm_medium.includes("paid") || utm_medium.includes("ppc") || utm_medium.includes("cpc")) {
-                    lead_medium = "paid social";
-                } else {
-                    lead_medium = "organic social";
-                }
-                lead_source = "facebook";
-            } else if (
-                (utm_medium === "social" && social_media.includes(utm_source)) ||
-                (utm_medium === "organic social" && social_media.includes(referrer)) ||
-                utm_source.indexOf("organicsocial") >= 0 || utm_medium.indexOf("organicsocial") >= 0 ||
-                utm_source.indexOf("organic social") >= 0 || utm_medium.indexOf("organic social") >= 0 ||
-                utm_source.indexOf("organic_social") >= 0 || utm_medium.indexOf("organic_social") >= 0 ||
-                utm_source.indexOf("organic+social") >= 0 || utm_medium.indexOf("organic+social") >= 0
-            ) {
-                lead_medium = "organic social";
-                if (social_media.includes(utm_source)) {
-                    lead_source = normalizeSocialSource(utm_source);
-                } else if (social_media.includes(referrer)) {
-                    lead_source = normalizeSocialSource(referrer);
-                } else {
-                    lead_source = referrer !== "" ? normalizeSocialSource(referrer) : (utm_source !== "" ? normalizeSocialSource(utm_source) : "social");
-                }
-            } else if (utm_medium === "display") {
-                lead_medium = "display";
-                if (display_networks.includes(utm_source)) {
-                    lead_source = utm_source;
-                } else if (display_networks.includes(referrer)) {
-                    lead_source = referrer;
-                }
-            } else if (utm_source.indexOf("email") >= 0 || utm_medium.indexOf("email") >= 0 || source.indexOf("email") >= 0) {
-                lead_medium = "email marketing";
-                lead_source = "email";
-            } else if (
-                (utm_source === "google" || utm_source === "google_ads" || utm_source.replace(/\+/g, "_") === "google_ads") &&
-                (utm_medium.indexOf("paid_search") >= 0 || utm_medium.indexOf("paid+search") >= 0 || utm_medium.indexOf("paid search") >= 0 || utm_medium.indexOf("paid ads") >= 0 || utm_medium === "edward" || utm_medium.indexOf("ppc") >= 0 || utm_medium.indexOf("cpc") >= 0 || utm_medium.indexOf("cps") >= 0)
-            ) {
-                lead_source = "google";
-                lead_medium = "paid search";
-            } else if (
-                (utm_source === "bing" || utm_source === "bing_ads" || utm_source.indexOf("microsoft") >= 0) &&
-                (utm_medium.indexOf("paid_search") >= 0 || utm_medium.indexOf("paid+search") >= 0 || utm_medium.indexOf("paid search") >= 0 || utm_medium.indexOf("paid ads") >= 0 || utm_medium === "edward" || utm_medium.indexOf("ppc") >= 0 || utm_medium.indexOf("cpc") >= 0 || utm_medium.indexOf("cps") >= 0)
-            ) {
-                lead_source = "bing";
-                lead_medium = "paid search";
-            } else if (utm_source.includes("adword") || utm_source.includes("ppc") || utm_source.includes("cpc")) {
-                lead_medium = "paid search";
-                if (utm_source.includes("adword")) {
-                    lead_source = "google";
-                } else if (referrer !== "") {
-                    lead_source = referrer;
-                }
-            } else if (
-                (paid_social_medium && (social_media.includes(utm_source) || social_media.includes(referrer))) ||
-                utm_source.indexOf("paidsocial") >= 0 || utm_medium.indexOf("paidsocial") >= 0 ||
-                utm_source.indexOf("paid social") >= 0 || utm_medium.indexOf("paid social") >= 0 ||
-                utm_source.indexOf("paid_social") >= 0 || utm_medium.indexOf("paid_social") >= 0 ||
-                utm_source.indexOf("paid+social") >= 0 || utm_medium.indexOf("paid+social") >= 0
-            ) {
-                lead_medium = "paid social";
-                if (social_media.includes(utm_source)) {
-                    lead_source = normalizeSocialSource(utm_source);
-                } else if (social_media.includes(referrer)) {
-                    lead_source = normalizeSocialSource(referrer);
-                } else if (referrer !== "") {
-                    lead_source = normalizeSocialSource(referrer);
-                }
-            } else if (utm_source.includes("google") && (utm_medium.includes("paid_search") || utm_medium.includes("paid+search") || utm_medium.includes("paid search"))) {
-                lead_source = "google";
-                lead_medium = "paid search";
-            } else if (
-                utm_source.indexOf("adword") >= 0 || utm_medium.indexOf("adword") >= 0 || utm_campaign.indexOf("adword") >= 0 ||
-                utm_source.indexOf("ppc") >= 0 || utm_medium.indexOf("ppc") >= 0 || utm_campaign.indexOf("ppc") >= 0 ||
-                utm_source.indexOf("cpc") >= 0 || utm_medium.indexOf("cpc") >= 0 || utm_campaign.indexOf("cpc") >= 0 ||
-                utm_source.indexOf("paid ads") >= 0 || utm_medium.indexOf("paid ads") >= 0 || utm_campaign.indexOf("paid ads") >= 0 ||
-                utm_source.indexOf("paid_search") >= 0 || utm_medium.indexOf("paid_search") >= 0 || utm_campaign.indexOf("paid_search") >= 0 ||
-                utm_source.indexOf("paid+search") >= 0 || utm_medium.indexOf("paid+search") >= 0 || utm_campaign.indexOf("paid+search") >= 0
-            ) {
-                lead_medium = "paid search";
-                lead_source = referrer !== "" ? referrer : "other";
-            } else if (utm_source !== "" || utm_medium !== "" || utm_campaign !== "") {
-                if (
-                    utm_combined.indexOf("email") < 0 && utm_combined.indexOf("adword") < 0 &&
-                    utm_combined.indexOf("ppc") < 0 && utm_combined.indexOf("cpc") < 0 &&
-                    utm_combined.indexOf("paid ads") < 0 && utm_combined.indexOf("paid") < 0 &&
-                    utm_combined.indexOf("paid_search") < 0 && utm_combined.indexOf("paid+search") < 0 &&
-                    utm_combined.indexOf("paid social") < 0 && utm_combined.indexOf("paid+social") < 0 &&
-                    utm_combined.indexOf("paid_social") < 0
-                ) {
-                    lead_medium = "other campaigns";
-                    lead_source = "other";
-                } else if (referrer === "google") {
-                    lead_medium = "paid search";
-                    lead_source = "google";
-                } else if (utm_source.includes("adword") || utm_medium.includes("adword") || utm_source.includes("ppc") || utm_medium.includes("ppc") || utm_source.includes("cpc") || utm_medium.includes("cpc")) {
-                    lead_medium = "paid search";
-                    if (utm_source.includes("adword") || utm_medium.includes("adword")) {
-                        lead_source = "google";
-                    } else if (referrer !== "") {
-                        lead_source = referrer;
-                    }
-                } else if (!(utm_source.includes("adword") || utm_medium.includes("adword") || utm_source.includes("ppc") || utm_medium.includes("ppc") || utm_source.includes("cpc") || utm_medium.includes("cpc") || utm_source.includes("email") || utm_medium.includes("email"))) {
-                    lead_medium = "other campaigns";
-                    lead_source = "other";
-                }
-            } else {
-                if (referrer !== "") {
-                    if (social_media.includes(referrer)) {
-                        lead_source = normalizeSocialSource(referrer);
-                        lead_medium = "organic social";
-                    } else if (search_engines.includes(referrer)) {
-                        lead_source = referrer;
-                        lead_medium = "organic search";
-                    } else {
-                        lead_source = referrer;
-                        lead_medium = "referral";
-                    }
-                }
-            }
-
-            window.localStorage.setItem("_fm_ls", lead_source);
-            window.localStorage.setItem("_fm_lm", lead_medium);
-            window.localStorage.setItem("_fm_lc", lead_campaign);
-            window.localStorage.setItem("_fm_gcid", google_click_id);
-            window.localStorage.setItem("_fm_fbclid", fb_click_id);
-            window.localStorage.setItem("_fm_gaid", ga_client_id);
-        }
-
-        const field_name_vs_id = {
-            lead_source: "f99aa72e-7ed2-4d6e-ae73-0086e6c8b738",
-            lead_medium: "929078fa-6a96-4496-8fc5-074f422cd299",
-            lead_campaign: "a82fbaab-c331-476d-9fce-1b15a45076e2",
-            google_click_id: "5c49b4d4-49ed-4a0f-b643-58a77375964b",
-            facebook_click_id: "ddfa5059-da33-42b2-9895-48c1813498ab",
-            ga_client_id: "54314c82-e2e8-4f56-9feb-4725490ab242",
-        };
-
-        function onLoadHandler() {
-            var forms = document.querySelectorAll("form");
-            for (var i = 0; i < forms.length; i++) {
-                var inputs = forms[i].querySelectorAll("input[type=hidden], input[type=text]");
-                for (var j = 0; j < inputs.length; j++) {
-                    var input = inputs[j];
-                    var input_name = (input.getAttribute("name") || "").toLowerCase().replace(/\s+/g, "_");
-                    var input_id = (input.getAttribute("id") || "").toLowerCase().replace(/\s+/g, "_");
-                    var input_data_url_key = (input.getAttribute("data-url-key") || "").toLowerCase().replace(/\s+/g, "_");
-
-                    var replaced = true;
-                    if (input_id.includes(field_name_vs_id.lead_source) || input_name.includes("lead_source") || input_id.includes("lead_source") || input_data_url_key.includes("lead_source")) {
-                        input.setAttribute("value", lead_source);
-                    } else if (input_id.includes(field_name_vs_id.lead_medium) || input_name.includes("lead_medium") || input_id.includes("lead_medium") || input_data_url_key.includes("lead_medium")) {
-                        input.setAttribute("value", lead_medium);
-                    } else if (input_id.includes(field_name_vs_id.lead_campaign) || input_name.includes("lead_campaign") || input_id.includes("lead_campaign") || input_data_url_key.includes("lead_campaign")) {
-                        input.setAttribute("value", lead_campaign);
-                    } else if (input_id.includes(field_name_vs_id.google_click_id) || input_name.includes("google_click_id") || input_id.includes("google_click_id") || input_data_url_key.includes("google_click_id")) {
-                        input.setAttribute("value", google_click_id);
-                    } else if (input_id.includes(field_name_vs_id.facebook_click_id) || input_name.includes("facebook_click_id") || input_id.includes("facebook_click_id") || input_data_url_key.includes("facebook_click_id")) {
-                        input.setAttribute("value", fb_click_id);
-                    } else if (input_id.includes(field_name_vs_id.ga_client_id) || input_name.includes("ga_client_id") || input_id.includes("ga_client_id") || input_data_url_key.includes("ga_client_id")) {
-                        input.setAttribute("value", ga_client_id);
-                    } else {
-                        replaced = false;
-                    }
-
-                    if (replaced && input_data_url_key !== "") {
-                        input.removeAttribute("data-url-key");
-                    }
-                }
-            }
-        }
-
-        window.addEventListener("load", onLoadHandler);
+        renderTestLinks();
+        renderLiveValues();
+        renderHistory();
     </script>
 </body>
 </html>

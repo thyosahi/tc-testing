@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lead Attribution Test Site</title>
-    <script
-src='//in.fw-cdn.com/31719983/876676.js'
-chat='true'>
-</script>
     <style>
         :root {
             --bg: #f0f4f8;
@@ -396,15 +392,15 @@ chat='true'>
     <script src="attribution.js"></script>
     <script>
         var TEST_CASES = [
-            { label: "Meta → facebook", query: "?utm_source=meta&utm_medium=social", expected: "facebook" },
-            { label: "FB paid social → facebook", query: "?utm_source=fb&utm_medium=paidsocial", expected: "facebook" },
-            { label: "IG → instagram", query: "?utm_source=ig&utm_medium=social", expected: "instagram" },
-            { label: "Insta → instagram", query: "?utm_source=insta&utm_medium=social", expected: "instagram" },
-            { label: "LinkedIn lnkd.in → linkedin", query: "?utm_source=lnkd.in&utm_medium=social", expected: "linkedin" },
-            { label: "LI → linkedin", query: "?utm_source=li&utm_medium=social", expected: "linkedin" },
-            { label: "YouTube youtu.be → youtube", query: "?utm_source=youtu.be&utm_medium=social", expected: "youtube" },
-            { label: "LinkTree → linktree", query: "?utm_source=linktr.ee&utm_medium=social", expected: "linktree" },
-            { label: "Meta paid social → facebook", query: "?utm_source=meta&utm_medium=ppc", expected: "facebook" }
+            { label: "Meta → facebook", query: "?utm_source=meta&utm_medium=social", expectedSource: "facebook", expectedMedium: "organic social" },
+            { label: "FB paid social → facebook", query: "?utm_source=fb&utm_medium=paidsocial", expectedSource: "facebook", expectedMedium: "paid social" },
+            { label: "IG → instagram", query: "?utm_source=ig&utm_medium=social", expectedSource: "instagram", expectedMedium: "organic social" },
+            { label: "Insta → instagram", query: "?utm_source=insta&utm_medium=social", expectedSource: "instagram", expectedMedium: "organic social" },
+            { label: "LinkedIn lnkd.in → linkedin", query: "?utm_source=lnkd.in&utm_medium=social", expectedSource: "linkedin", expectedMedium: "organic social" },
+            { label: "LI → linkedin", query: "?utm_source=li&utm_medium=social", expectedSource: "linkedin", expectedMedium: "organic social" },
+            { label: "YouTube youtu.be → youtube", query: "?utm_source=youtu.be&utm_medium=social", expectedSource: "youtube", expectedMedium: "organic social" },
+            { label: "LinkTree → linktree", query: "?utm_source=linktr.ee&utm_medium=social", expectedSource: "linktree", expectedMedium: "organic social" },
+            { label: "Meta paid social → facebook", query: "?utm_source=meta&utm_medium=ppc", expectedSource: "facebook", expectedMedium: "paid social" }
         ];
 
         var HISTORY_KEY = "_fm_test_submissions";
@@ -418,7 +414,7 @@ chat='true'>
             var base = getBaseUrl();
             list.innerHTML = TEST_CASES.map(function (tc) {
                 var href = base + tc.query;
-                return '<li><a href="' + href + '">' + tc.label + '</a> <span class="expected">→ lead_source: ' + tc.expected + '</span></li>';
+                return '<li><a href="' + href + '">' + tc.label + '</a> <span class="expected">→ source: ' + tc.expectedSource + ', medium: ' + tc.expectedMedium + '</span></li>';
             }).join("");
         }
 
@@ -529,6 +525,7 @@ chat='true'>
             document.getElementById("submission-result").scrollIntoView({ behavior: "smooth", block: "nearest" });
         });
 
+        populateForms();
         renderTestLinks();
         renderLiveValues();
         renderHistory();

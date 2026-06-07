@@ -238,17 +238,20 @@ if (lead_source === "") {
         }
     }
 
-    if (["facebook", "fb", "meta"].includes(lead_source)) {
-        lead_source = "facebook";
-    } else if (["instagram", "ig", "insta"].includes(lead_source)) {
-        lead_source = "instagram";
-    } else if (["linktree", "linktr.ee"].includes(lead_source)) {
-        lead_source = "linktree";
-    } else if (["linkedin", "li", "lnkd.in"].includes(lead_source)) {
-        lead_source = "linkedin";
-    } else if (["youtube", "youtube.com", "youtu.be"].includes(lead_source)) {
-        lead_source = "youtube";
+    let final_source = lead_source;
+    if (["facebook", "fb", "meta"].includes(utm_source) || ["facebook", "fb", "meta"].includes(lead_source)) {
+        final_source = "facebook";
+    } else if (["instagram", "ig", "insta"].includes(utm_source) || ["instagram", "ig", "insta"].includes(lead_source)) {
+        final_source = "instagram";
+    } else if (["linktree", "linktr.ee"].includes(utm_source) || ["linktree", "linktr.ee"].includes(lead_source)) {
+        final_source = "linktree";
+    } else if (["linkedin", "li", "lnkd.in"].includes(utm_source) || ["linkedin", "li", "lnkd.in"].includes(lead_source)) {
+        final_source = "linkedin";
+    } else if (["youtube", "youtube.com", "youtu.be"].includes(utm_source) || ["youtube", "youtube.com", "youtu.be"].includes(lead_source)) {
+        final_source = "youtube";
     }
+    lead_source = final_source;
+
 
     window.localStorage.setItem("_fm_ls", lead_source);
     window.localStorage.setItem("_fm_lm", lead_medium);

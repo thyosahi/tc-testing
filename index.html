@@ -3,680 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lead Attribution Test Site</title>
-    <script src="//in.fw-cdn.com/31719983/876676.js" chat="true"></script>
-    <style>
-        :root {
-            --bg: #f0f4f8;
-            --card: #ffffff;
-            --border: #d8e0ea;
-            --text: #1a2332;
-            --muted: #5c6b7a;
-            --accent: #2563eb;
-            --accent-hover: #1d4ed8;
-            --success: #059669;
-            --danger: #dc2626;
-            --warning-bg: #fffbeb;
-            --warning-border: #f59e0b;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.5;
-        }
-
-        header {
-            background: linear-gradient(135deg, #1e3a5f, #2563eb);
-            color: #fff;
-            padding: 2rem 1.5rem;
-        }
-
-        header h1 {
-            margin: 0 0 0.5rem;
-            font-size: 1.75rem;
-        }
-
-        header p {
-            margin: 0;
-            opacity: 0.9;
-            max-width: 640px;
-        }
-
-        main {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 1.5rem;
-            display: grid;
-            gap: 1.5rem;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-        }
-
-        .card h2 {
-            margin: 0 0 1rem;
-            font-size: 1.1rem;
-        }
-
-        .notice {
-            background: var(--warning-bg);
-            border-left: 4px solid var(--warning-border);
-            padding: 0.875rem 1rem;
-            border-radius: 0 6px 6px 0;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        .btn-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        button, .btn {
-            display: inline-block;
-            border: none;
-            border-radius: 6px;
-            padding: 0.55rem 1rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.15s;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: #fff;
-        }
-
-        .btn-danger:hover { background: #b91c1c; }
-
-        .btn-primary {
-            background: var(--accent);
-            color: #fff;
-        }
-
-        .btn-primary:hover { background: var(--accent-hover); }
-
-        .btn-outline {
-            background: #fff;
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-
-        .btn-outline:hover { background: #eff6ff; }
-
-        .form-grid {
-            display: grid;
-            gap: 1rem;
-        }
-
-        @media (min-width: 640px) {
-            .form-grid.two-col {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        label {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-bottom: 0.35rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-        }
-
-        input[type="text"],
-        input[type="email"] {
-            width: 100%;
-            padding: 0.65rem 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 0.95rem;
-        }
-
-        input[readonly] {
-            background: #f8fafc;
-            color: var(--text);
-        }
-
-        .attr-field input[readonly] {
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-            font-weight: 600;
-        }
-
-        .current-url {
-            font-size: 0.85rem;
-            color: var(--muted);
-            word-break: break-all;
-            margin-bottom: 1rem;
-            padding: 0.5rem 0.75rem;
-            background: #f8fafc;
-            border-radius: 6px;
-        }
-
-        .test-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: grid;
-            gap: 0.5rem;
-        }
-
-        .test-list li {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.5rem 1rem;
-            padding: 0.65rem 0.75rem;
-            background: #f8fafc;
-            border-radius: 6px;
-            font-size: 0.875rem;
-        }
-
-        .test-list a {
-            color: var(--accent);
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .test-list a:hover { text-decoration: underline; }
-
-        .expected {
-            color: var(--success);
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-            font-size: 0.8rem;
-        }
-
-        .live-values {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 0.75rem;
-            margin-top: 1rem;
-        }
-
-        .live-values div {
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 6px;
-            padding: 0.65rem 0.75rem;
-        }
-
-        .live-values span {
-            display: block;
-            font-size: 0.7rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-
-        .live-values strong {
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-            font-size: 0.95rem;
-        }
-
-        #submission-result {
-            display: none;
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #ecfdf5;
-            border: 1px solid #6ee7b7;
-            border-radius: 8px;
-        }
-
-        #submission-result.visible { display: block; }
-
-        #submission-result h3 {
-            margin: 0 0 0.75rem;
-            color: var(--success);
-            font-size: 1rem;
-        }
-
-        pre {
-            margin: 0;
-            padding: 0.75rem;
-            background: #1e293b;
-            color: #e2e8f0;
-            border-radius: 6px;
-            overflow-x: auto;
-            font-size: 0.8rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 0.5rem 0.65rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        th {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--muted);
-        }
-
-        .empty-state {
-            color: var(--muted);
-            font-size: 0.9rem;
-            text-align: center;
-            padding: 1.5rem;
-        }
-
-        .tracking-status {
-            display: grid;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-        }
-
-        .tracking-status div {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 0.75rem;
-            background: #f8fafc;
-            border-radius: 6px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .status-dot.ok { background: var(--success); }
-        .status-dot.warn { background: var(--warning-border); }
-        .status-dot.fail { background: var(--danger); }
-
-        #mas-log {
-            margin-top: 0.75rem;
-            padding: 0.75rem;
-            background: #1e293b;
-            color: #94a3b8;
-            border-radius: 6px;
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-            font-size: 0.75rem;
-            max-height: 120px;
-            overflow-y: auto;
-        }
-
-        #mas-log:empty { display: none; }
-    </style>
+    <title>CRM Lead Generation Form</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Meta tracking values for test -->
+    <meta name="description" content="A demonstration form to test the src_tracking logic.">
 </head>
 <body>
-    <header>
-        <h1>Lead Attribution Test Site</h1>
-        <p>Test UTM parameter mapping and form submission with Freshsales-style hidden fields. Deploy to Vercel or GitHub Pages to share with your team.</p>
-    </header>
-
-    <main>
-        <section class="card">
-            <h2>Freshworks / MAS tracking status</h2>
-            <div class="notice">
-                The MAS call is sent by the Freshworks tracking script (<code>876676.js</code>), not by <code>attribution.js</code>.
-                On submit, Freshworks captures the form via its hallway listener and calls <code>FM.trackMasEvent("web_form", …)</code>.
+    <div class="form-container">
+        <div class="form-header">
+            <h1>Get in Touch</h1>
+            <p>Our team will reach out to you shortly.</p>
+        </div>
+        <form id="crmForm" action="#" method="POST">
+            <!-- Visible Fields -->
+            <div class="input-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" required placeholder="John Doe" autocomplete="off">
             </div>
-            <div class="tracking-status" id="tracking-status"></div>
-            <div class="btn-row" style="margin-top: 0.75rem;">
-                <button type="button" class="btn-outline" id="force-mas-btn">Force MAS form capture</button>
+            <div class="input-group">
+                <label for="email">Work Email</label>
+                <input type="email" id="email" name="email" required placeholder="john@company.com" autocomplete="off">
             </div>
-            <pre id="mas-log"></pre>
-        </section>
+            
+            <!-- Hidden Tracking Fields (These will be populated by src_tracking.js) -->
+            <!-- The script checks input name or id for these keywords -->
+            <input type="hidden" id="lead_source" name="lead_source" value="">
+            <input type="hidden" id="lead_medium" name="lead_medium" value="">
+            <input type="hidden" id="lead_campaign" name="lead_campaign" value="">
+            <input type="hidden" id="google_click_id" name="google_click_id" value="">
+            <input type="hidden" id="facebook_click_id" name="facebook_click_id" value="">
+            <input type="hidden" id="ga_client_id" name="ga_client_id" value="">
 
-        <section class="card">
-            <h2>Quick test URLs</h2>
-            <div class="notice">
-                Click a test link below, then submit the form. Use <strong>Clear Storage &amp; Reload</strong> before each new test so attribution runs fresh.
-            </div>
-            <div class="btn-row">
-                <button type="button" class="btn-danger" id="clear-btn">Clear Storage &amp; Reload</button>
-            </div>
-            <div class="current-url">
-                <strong>Current URL:</strong> <span id="current-url"></span>
-            </div>
-            <ul class="test-list" id="test-links"></ul>
-            <div class="live-values" id="live-values"></div>
-        </section>
+            <button type="submit" class="submit-btn" id="submitBtn">Submit Request</button>
+        </form>
+        <div class="tracking-debug" id="debugInfo">
+            <h3>Tracking Info Details (For Validation)</h3>
+            <pre id="debugOutput">Loading tracking data...</pre>
+        </div>
+    </div>
 
-        <section class="card">
-            <h2>Contact form (simulated lead submission)</h2>
-            <form id="lead-form">
-                <div class="form-grid two-col">
-                    <div>
-                        <label for="first_name">First name</label>
-                        <input type="text" id="first_name" name="first_name" required placeholder="Jane">
-                    </div>
-                    <div>
-                        <label for="last_name">Last name</label>
-                        <input type="text" id="last_name" name="last_name" required placeholder="Doe">
-                    </div>
-                    <div style="grid-column: 1 / -1;">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required placeholder="jane@example.com">
-                    </div>
-                </div>
-
-                <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
-
-                <p style="margin: 0 0 1rem; font-size: 0.9rem; color: var(--muted);">
-                    Attribution fields (auto-populated by script — these would normally be hidden on production):
-                </p>
-
-                <div class="form-grid two-col attr-field">
-                    <div>
-                        <label for="lead_source">Lead Source</label>
-                        <input type="text" name="lead_source" id="lead_source" readonly>
-                    </div>
-                    <div>
-                        <label for="lead_medium">Lead Medium</label>
-                        <input type="text" name="lead_medium" id="lead_medium" readonly>
-                    </div>
-                    <div>
-                        <label for="lead_campaign">Lead Campaign</label>
-                        <input type="text" name="lead_campaign" id="lead_campaign" readonly>
-                    </div>
-                    <div>
-                        <label for="google_click_id">Google Click ID</label>
-                        <input type="text" name="google_click_id" id="google_click_id" readonly>
-                    </div>
-                    <div>
-                        <label for="facebook_click_id">Facebook Click ID</label>
-                        <input type="text" name="facebook_click_id" id="facebook_click_id" readonly>
-                    </div>
-                    <div>
-                        <label for="ga_client_id">GA Client ID</label>
-                        <input type="text" name="ga_client_id" id="ga_client_id" readonly>
-                    </div>
-                </div>
-
-                <div class="btn-row" style="margin-top: 1.25rem;">
-                    <button type="submit" class="btn-primary">Submit lead</button>
-                </div>
-            </form>
-
-            <div id="submission-result">
-                <h3>Submission captured</h3>
-                <p style="margin: 0 0 0.75rem; font-size: 0.9rem;">This is what would be sent to your CRM:</p>
-                <pre id="submission-json"></pre>
-            </div>
-        </section>
-
-        <section class="card">
-            <h2>Submission history</h2>
-            <div id="history-empty" class="empty-state">No submissions yet. Submit the form above to see results here.</div>
-            <div id="history-table-wrap" style="display: none; overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Lead Source</th>
-                            <th>Lead Medium</th>
-                            <th>UTM Source</th>
-                        </tr>
-                    </thead>
-                    <tbody id="history-body"></tbody>
-                </table>
-            </div>
-            <div class="btn-row" style="margin-top: 1rem;">
-                <button type="button" class="btn-outline" id="clear-history-btn" style="display: none;">Clear history</button>
-            </div>
-        </section>
-    </main>
-
-    <script src="attribution.js"></script>
+    <!-- Include the tracking script we modified -->
+    <script src="src_tracking.js"></script>
+    
     <script>
-        var TEST_CASES = [
-            { label: "Meta → facebook", query: "?utm_source=meta&utm_medium=social", expectedSource: "facebook", expectedMedium: "organic social" },
-            { label: "FB paid social → facebook", query: "?utm_source=fb&utm_medium=paidsocial", expectedSource: "facebook", expectedMedium: "paid social" },
-            { label: "IG → instagram", query: "?utm_source=ig&utm_medium=social", expectedSource: "instagram", expectedMedium: "organic social" },
-            { label: "Insta → instagram", query: "?utm_source=insta&utm_medium=social", expectedSource: "instagram", expectedMedium: "organic social" },
-            { label: "LinkedIn lnkd.in → linkedin", query: "?utm_source=lnkd.in&utm_medium=social", expectedSource: "linkedin", expectedMedium: "organic social" },
-            { label: "LI → linkedin", query: "?utm_source=li&utm_medium=social", expectedSource: "linkedin", expectedMedium: "organic social" },
-            { label: "YouTube youtu.be → youtube", query: "?utm_source=youtu.be&utm_medium=social", expectedSource: "youtube", expectedMedium: "organic social" },
-            { label: "LinkTree → linktree", query: "?utm_source=linktr.ee&utm_medium=social", expectedSource: "linktree", expectedMedium: "organic social" },
-            { label: "Meta paid social → facebook", query: "?utm_source=meta&utm_medium=ppc", expectedSource: "facebook", expectedMedium: "paid social" }
-        ];
-
-        var HISTORY_KEY = "_fm_test_submissions";
-        var masLogEl = document.getElementById("mas-log");
-
-        function logMas(message) {
-            if (!masLogEl) return;
-            var line = new Date().toLocaleTimeString() + " — " + message;
-            masLogEl.textContent = (masLogEl.textContent ? masLogEl.textContent + "\n" : "") + line;
-            masLogEl.scrollTop = masLogEl.scrollHeight;
-        }
-
-        function hookFMApi() {
-            window.FMApi = window.FMApi || [];
-            var originalPush = window.FMApi.push.bind(window.FMApi);
-            window.FMApi.push = function () {
-                var args = Array.prototype.slice.call(arguments);
-                if (args[0] === "fm_form_tracking") {
-                    logMas("FMApi fm_form_tracking queued → MAS web_form event");
-                }
-                return originalPush.apply(window.FMApi, args);
-            };
-            if (window.FMApi.process) {
-                var originalProcess = window.FMApi.process;
-                window.FMApi.process = function () {
-                    logMas("FMApi.process() running queued events");
-                    return originalProcess.apply(window.FMApi, arguments);
-                };
-            }
-        }
-
-        function renderTrackingStatus() {
-            var wrap = document.getElementById("tracking-status");
-            if (!wrap) return;
-
-            var hasFM = typeof window.FM !== "undefined" && typeof window.FM.trackMasEvent === "function";
-            var hasFreshsales = typeof window.Freshsales !== "undefined";
-            var hasHallway = hasFreshsales && window.Freshsales.hallway && typeof window.Freshsales.hallway.formSubmitHandler === "function";
-            var smartforms = hasFreshsales && window.Freshsales.analytics && window.Freshsales.analytics.smartformsEnabled;
-            var formCapture = hasFreshsales && window.Freshsales.analytics && window.Freshsales.analytics.formCapture;
-
-            function row(ok, label, detail) {
-                return '<div><span class="status-dot ' + (ok ? "ok" : "fail") + '"></span><span><strong>' + label + ':</strong> ' + detail + '</span></div>';
-            }
-
-            wrap.innerHTML =
-                row(hasFM, "FM.trackMasEvent", hasFM ? "available" : "not loaded — is 876676.js blocked?") +
-                row(hasHallway, "Form hallway", hasHallway ? "listening for submit clicks" : "not ready") +
-                row(!!formCapture, "Form capture", formCapture ? "enabled" : "disabled in account settings") +
-                row(!!smartforms, "Smart forms", smartforms ? "enabled (auto-captures all forms with email)" : "disabled — form must be in web_form_tracking.json allowlist");
-        }
-
-        function ensureAttributionBeforeCapture() {
-            populateForms();
-        }
-
-        function triggerHallwayCapture() {
-            ensureAttributionBeforeCapture();
-            if (!window.Freshsales || !window.Freshsales.hallway) {
-                logMas("Freshsales hallway not available — MAS call skipped");
-                return false;
-            }
-            var $ = window.Freshsales.analytics && window.Freshsales.analytics.$;
-            if (!$) {
-                logMas("Freshsales jQuery not ready — MAS call skipped");
-                return false;
-            }
-            var form = $("#lead-form");
-            if (!form.length) {
-                logMas("Form #lead-form not found");
-                return false;
-            }
-            logMas("Triggering Freshsales hallway form capture…");
-            window.Freshsales.hallway.formSubmitHandler(form);
-            return true;
-        }
-
-        function getBaseUrl() {
-            return window.location.origin + window.location.pathname;
-        }
-
-        function renderTestLinks() {
-            var list = document.getElementById("test-links");
-            var base = getBaseUrl();
-            list.innerHTML = TEST_CASES.map(function (tc) {
-                var href = base + tc.query;
-                return '<li><a href="' + href + '">' + tc.label + '</a> <span class="expected">→ source: ' + tc.expectedSource + ', medium: ' + tc.expectedMedium + '</span></li>';
-            }).join("");
-        }
-
-        function renderLiveValues() {
-            document.getElementById("current-url").textContent = window.location.href;
-            document.getElementById("live-values").innerHTML =
-                '<div><span>Lead Source</span><strong id="live-ls">' + (lead_source || "—") + '</strong></div>' +
-                '<div><span>Lead Medium</span><strong id="live-lm">' + (lead_medium || "—") + '</strong></div>' +
-                '<div><span>Lead Campaign</span><strong id="live-lc">' + (lead_campaign || "—") + '</strong></div>' +
-                '<div><span>localStorage _fm_ls</span><strong>' + (localStorage.getItem("_fm_ls") || "—") + '</strong></div>';
-        }
-
-        function clearStorageAndReload() {
-            localStorage.removeItem("_fm_ls");
-            localStorage.removeItem("_fm_lm");
-            localStorage.removeItem("_fm_lc");
-            localStorage.removeItem("_fm_gcid");
-            localStorage.removeItem("_fm_fbclid");
-            localStorage.removeItem("_fm_gaid");
-            window.location.href = getBaseUrl();
-        }
-
-        function loadHistory() {
-            try {
-                return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function saveHistory(entries) {
-            localStorage.setItem(HISTORY_KEY, JSON.stringify(entries));
-        }
-
-        function renderHistory() {
-            var entries = loadHistory();
-            var empty = document.getElementById("history-empty");
-            var wrap = document.getElementById("history-table-wrap");
-            var clearBtn = document.getElementById("clear-history-btn");
-            var body = document.getElementById("history-body");
-
-            if (entries.length === 0) {
-                empty.style.display = "block";
-                wrap.style.display = "none";
-                clearBtn.style.display = "none";
-                return;
-            }
-
-            empty.style.display = "none";
-            wrap.style.display = "block";
-            clearBtn.style.display = "inline-block";
-            body.innerHTML = entries.slice().reverse().map(function (e) {
-                return "<tr>" +
-                    "<td>" + e.time + "</td>" +
-                    "<td>" + e.first_name + " " + e.last_name + "</td>" +
-                    "<td>" + e.email + "</td>" +
-                    "<td><strong>" + e.lead_source + "</strong></td>" +
-                    "<td>" + e.lead_medium + "</td>" +
-                    "<td>" + (e.utm_source || "—") + "</td>" +
-                    "</tr>";
-            }).join("");
-        }
-
-        document.getElementById("clear-btn").addEventListener("click", clearStorageAndReload);
-
-        document.getElementById("force-mas-btn").addEventListener("click", triggerHallwayCapture);
-
-        document.getElementById("lead-form").addEventListener("click", function (e) {
-            if (e.target.type === "submit" || (e.target.tagName === "BUTTON" && e.target.type !== "button")) {
-                ensureAttributionBeforeCapture();
-            }
-        }, true);
-
-        document.getElementById("clear-history-btn").addEventListener("click", function () {
-            localStorage.removeItem(HISTORY_KEY);
-            renderHistory();
+        // Script to display the populated values for debugging
+        window.addEventListener("load", function() {
+            setTimeout(() => {
+                const ls = document.getElementById("lead_source").value;
+                const lm = document.getElementById("lead_medium").value;
+                const lc = document.getElementById("lead_campaign").value;
+                
+                document.getElementById("debugOutput").textContent = 
+                    `Source: ${ls || 'N/A'}\nMedium: ${lm || 'N/A'}\nCampaign: ${lc || 'N/A'}\n\nHint: Open this page with ?utm_source=FB in the URL!`;
+            }, 300); // slight delay to let tracking script run
         });
 
-        document.getElementById("lead-form").addEventListener("submit", function (e) {
+        document.getElementById('crmForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            ensureAttributionBeforeCapture();
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.textContent;
+            
+            // Micro animation
+            btn.textContent = "Submitting...";
+            btn.style.opacity = 0.8;
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            console.log("Form Submission Data:");
+            console.table(data);
 
-            var params = new URLSearchParams(window.location.search);
-            var payload = {
-                first_name: document.getElementById("first_name").value.trim(),
-                last_name: document.getElementById("last_name").value.trim(),
-                email: document.getElementById("email").value.trim(),
-                lead_source: document.getElementById("lead_source").value,
-                lead_medium: document.getElementById("lead_medium").value,
-                lead_campaign: document.getElementById("lead_campaign").value,
-                google_click_id: document.getElementById("google_click_id").value,
-                facebook_click_id: document.getElementById("facebook_click_id").value,
-                ga_client_id: document.getElementById("ga_client_id").value,
-                utm_source: params.get("utm_source") || "",
-                utm_medium: params.get("utm_medium") || "",
-                utm_campaign: params.get("utm_campaign") || "",
-                page_url: window.location.href,
-                submitted_at: new Date().toISOString()
-            };
-
-            var history = loadHistory();
-            history.push({
-                time: new Date().toLocaleString(),
-                first_name: payload.first_name,
-                last_name: payload.last_name,
-                email: payload.email,
-                lead_source: payload.lead_source,
-                lead_medium: payload.lead_medium,
-                utm_source: payload.utm_source
-            });
-            saveHistory(history);
-
-            document.getElementById("submission-json").textContent = JSON.stringify(payload, null, 2);
-            document.getElementById("submission-result").classList.add("visible");
-            renderHistory();
-            document.getElementById("submission-result").scrollIntoView({ behavior: "smooth", block: "nearest" });
-        });
-
-        hookFMApi();
-        populateForms();
-        renderTestLinks();
-        renderLiveValues();
-        renderHistory();
-        renderTrackingStatus();
-
-        window.addEventListener("load", function () {
-            renderTrackingStatus();
-            if (typeof window.FM !== "undefined" && typeof window.FM.trackMasEvent === "function") {
-                logMas("Freshworks tracking script loaded");
-            } else {
-                logMas("Freshworks tracking script not detected after load");
-            }
+            setTimeout(() => {
+                alert("Successfully saved! Check your developer console to see the full submitted payload including tracking params.");
+                btn.textContent = originalText;
+                btn.style.opacity = 1;
+            }, 500);
         });
     </script>
 </body>
 </html>
-
-

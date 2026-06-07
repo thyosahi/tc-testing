@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lead Attribution Test Site</title>
+    <script src="//in.fw-cdn.com/31719983/876676.js" chat="true"></script>
     <style>
         :root {
             --bg: #f0f4f8;
@@ -278,6 +279,46 @@
             text-align: center;
             padding: 1.5rem;
         }
+
+        .tracking-status {
+            display: grid;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .tracking-status div {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-dot.ok { background: var(--success); }
+        .status-dot.warn { background: var(--warning-border); }
+        .status-dot.fail { background: var(--danger); }
+
+        #mas-log {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: #1e293b;
+            color: #94a3b8;
+            border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.75rem;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        #mas-log:empty { display: none; }
     </style>
 </head>
 <body>
@@ -287,6 +328,19 @@
     </header>
 
     <main>
+        <section class="card">
+            <h2>Freshworks / MAS tracking status</h2>
+            <div class="notice">
+                The MAS call is sent by the Freshworks tracking script (<code>876676.js</code>), not by <code>attribution.js</code>.
+                On submit, Freshworks captures the form via its hallway listener and calls <code>FM.trackMasEvent("web_form", …)</code>.
+            </div>
+            <div class="tracking-status" id="tracking-status"></div>
+            <div class="btn-row" style="margin-top: 0.75rem;">
+                <button type="button" class="btn-outline" id="force-mas-btn">Force MAS form capture</button>
+            </div>
+            <pre id="mas-log"></pre>
+        </section>
+
         <section class="card">
             <h2>Quick test URLs</h2>
             <div class="notice">
@@ -404,6 +458,79 @@
         ];
 
         var HISTORY_KEY = "_fm_test_submissions";
+        var masLogEl = document.getElementById("mas-log");
+
+        function logMas(message) {
+            if (!masLogEl) return;
+            var line = new Date().toLocaleTimeString() + " — " + message;
+            masLogEl.textContent = (masLogEl.textContent ? masLogEl.textContent + "\n" : "") + line;
+            masLogEl.scrollTop = masLogEl.scrollHeight;
+        }
+
+        function hookFMApi() {
+            window.FMApi = window.FMApi || [];
+            var originalPush = window.FMApi.push.bind(window.FMApi);
+            window.FMApi.push = function () {
+                var args = Array.prototype.slice.call(arguments);
+                if (args[0] === "fm_form_tracking") {
+                    logMas("FMApi fm_form_tracking queued → MAS web_form event");
+                }
+                return originalPush.apply(window.FMApi, args);
+            };
+            if (window.FMApi.process) {
+                var originalProcess = window.FMApi.process;
+                window.FMApi.process = function () {
+                    logMas("FMApi.process() running queued events");
+                    return originalProcess.apply(window.FMApi, arguments);
+                };
+            }
+        }
+
+        function renderTrackingStatus() {
+            var wrap = document.getElementById("tracking-status");
+            if (!wrap) return;
+
+            var hasFM = typeof window.FM !== "undefined" && typeof window.FM.trackMasEvent === "function";
+            var hasFreshsales = typeof window.Freshsales !== "undefined";
+            var hasHallway = hasFreshsales && window.Freshsales.hallway && typeof window.Freshsales.hallway.formSubmitHandler === "function";
+            var smartforms = hasFreshsales && window.Freshsales.analytics && window.Freshsales.analytics.smartformsEnabled;
+            var formCapture = hasFreshsales && window.Freshsales.analytics && window.Freshsales.analytics.formCapture;
+
+            function row(ok, label, detail) {
+                return '<div><span class="status-dot ' + (ok ? "ok" : "fail") + '"></span><span><strong>' + label + ':</strong> ' + detail + '</span></div>';
+            }
+
+            wrap.innerHTML =
+                row(hasFM, "FM.trackMasEvent", hasFM ? "available" : "not loaded — is 876676.js blocked?") +
+                row(hasHallway, "Form hallway", hasHallway ? "listening for submit clicks" : "not ready") +
+                row(!!formCapture, "Form capture", formCapture ? "enabled" : "disabled in account settings") +
+                row(!!smartforms, "Smart forms", smartforms ? "enabled (auto-captures all forms with email)" : "disabled — form must be in web_form_tracking.json allowlist");
+        }
+
+        function ensureAttributionBeforeCapture() {
+            populateForms();
+        }
+
+        function triggerHallwayCapture() {
+            ensureAttributionBeforeCapture();
+            if (!window.Freshsales || !window.Freshsales.hallway) {
+                logMas("Freshsales hallway not available — MAS call skipped");
+                return false;
+            }
+            var $ = window.Freshsales.analytics && window.Freshsales.analytics.$;
+            if (!$) {
+                logMas("Freshsales jQuery not ready — MAS call skipped");
+                return false;
+            }
+            var form = $("#lead-form");
+            if (!form.length) {
+                logMas("Form #lead-form not found");
+                return false;
+            }
+            logMas("Triggering Freshsales hallway form capture…");
+            window.Freshsales.hallway.formSubmitHandler(form);
+            return true;
+        }
 
         function getBaseUrl() {
             return window.location.origin + window.location.pathname;
@@ -480,6 +607,14 @@
 
         document.getElementById("clear-btn").addEventListener("click", clearStorageAndReload);
 
+        document.getElementById("force-mas-btn").addEventListener("click", triggerHallwayCapture);
+
+        document.getElementById("lead-form").addEventListener("click", function (e) {
+            if (e.target.type === "submit" || (e.target.tagName === "BUTTON" && e.target.type !== "button")) {
+                ensureAttributionBeforeCapture();
+            }
+        }, true);
+
         document.getElementById("clear-history-btn").addEventListener("click", function () {
             localStorage.removeItem(HISTORY_KEY);
             renderHistory();
@@ -487,7 +622,7 @@
 
         document.getElementById("lead-form").addEventListener("submit", function (e) {
             e.preventDefault();
-            populateForms();
+            ensureAttributionBeforeCapture();
 
             var params = new URLSearchParams(window.location.search);
             var payload = {
@@ -525,10 +660,23 @@
             document.getElementById("submission-result").scrollIntoView({ behavior: "smooth", block: "nearest" });
         });
 
+        hookFMApi();
         populateForms();
         renderTestLinks();
         renderLiveValues();
         renderHistory();
+        renderTrackingStatus();
+
+        window.addEventListener("load", function () {
+            renderTrackingStatus();
+            if (typeof window.FM !== "undefined" && typeof window.FM.trackMasEvent === "function") {
+                logMas("Freshworks tracking script loaded");
+            } else {
+                logMas("Freshworks tracking script not detected after load");
+            }
+        });
     </script>
 </body>
 </html>
+
+
